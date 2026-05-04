@@ -45,7 +45,7 @@
 
 ```
 ┌──────────┐     HTTPS      ┌──────────────┐     API      ┌─────────────┐
-│  LINE    │ ──Webhook────▶ │  Flask App   │ ───────────▶ │ Gemini API  │
+│  LINE    │ ──Webhook────▶ │ FastAPI App  │ ───────────▶ │ Gemini API  │
 │  使用者   │ ◀─Reply──────  │  (Python)    │ ◀─────────── │ (Google AI) │
 └──────────┘                └──────┬───────┘              └─────────────┘
                                    │
@@ -63,7 +63,7 @@
 |------|------|----------|
 | 語言 | Python | >= 3.10 |
 | LINE SDK | line-bot-sdk-python | v3（使用 `linebot.v3` 模組） |
-| Web 框架 | Flask | 輕量 Webhook 伺服器 |
+| Web 框架 | FastAPI + Uvicorn | 原生 async、自動 API 文件 |
 | AI 引擎 | Google Gemini API | `google-genai` 套件 |
 | 資料庫 | SQLite | 內建輕量資料庫，無需額外安裝 |
 | 環境變數 | python-dotenv | 管理敏感設定 |
@@ -77,9 +77,12 @@ stock-line-bot/
 ├── .gitignore
 ├── requirements.txt
 ├── docs/
-│   └── PRD.md              # 本文件
-├── app.py                  # 主程式：Flask + Webhook
+│   ├── PRD.md              # 本文件
+│   └── ARCHITECTURE.md     # 系統架構文件
+├── app.py                  # 主程式：FastAPI + Webhook
+├── line_handler.py         # LINE 事件處理器
 ├── gemini_service.py       # Gemini API 互動邏輯
+├── config.py               # 環境變數集中管理
 ├── db.py                   # SQLite 資料庫操作
 ├── stock_data.db           # SQLite 資料庫檔案（自動產生）
 └── README.md
@@ -272,16 +275,18 @@ GEMINI_API_KEY=your_gemini_api_key
 ## 6. 依賴套件
 
 ```txt
+fastapi
+uvicorn[standard]
 line-bot-sdk
-flask
 google-genai
 python-dotenv
+aiosqlite
 ```
 
 安裝指令：
 
 ```bash
-pip install line-bot-sdk flask google-genai python-dotenv
+pip install fastapi uvicorn[standard] line-bot-sdk google-genai python-dotenv aiosqlite
 ```
 
 ---
@@ -314,7 +319,7 @@ pip install line-bot-sdk flask google-genai python-dotenv
 
 - [ ] 建立專案結構與 Git repo
 - [ ] 設定環境變數與 `.env`
-- [ ] 實作 Flask Webhook（`app.py`）
+- [ ] 實作 FastAPI Webhook（`app.py`）
 - [ ] 實作 Echo Bot（收到什麼回什麼）
 - [ ] 使用 ngrok 測試 Webhook 連線
 
