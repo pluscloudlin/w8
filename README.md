@@ -102,30 +102,32 @@ ngrok http 8000
 
 **Q1. 你在 `/linebot-implement` Skill 的「注意事項」寫了哪些規則？為什麼這樣寫？**
 
-> 規則 1：強制使用 line-bot-sdk-python v3 版本。
-  > 避免 AI 使用舊版的 v2 語法，因為新舊版在模組匯入與訊息傳送邏輯上有巨大差異。
-> 規則 2：金鑰必須透過 .env 讀取，嚴禁寫死在程式碼中。
-  > 為了保護 Channel Secret 等機密不被誤傳至 GitHub，這也是資安的基本規範。
+> **規則 1：強制使用 line-bot-sdk-python v3 版本**
+> - *原因：* 避免 AI 使用舊版的 v2 語法，因為新舊版在模組匯入與訊息傳送邏輯上有巨大差異。
+>
+> **規則 2：金鑰必須透過 .env 讀取，嚴禁寫死在程式碼中**
+> - *原因：* 為了保護 Channel Secret 等機密不被誤傳至 GitHub，這也是資安的基本規範。
 
 ---
 
 **Q2. 你的 Skill 第一次執行後，AI 產出的程式直接能跑嗎？需要修改哪些地方？修改後有沒有更新 Skill？**
 
-> 不行。
-> 需修改模型名稱，AI 預設使用舊的 api 無法使用，後來手動改為 gemini-3.1-flash-lite-preview 才恢復正常。還有在路徑設定時，Webhook URL 忘記加 /callback。
-> 是的有更新。我將指定的 Gemini 模型名稱加入 Skill 的限制中，避免 AI 下次再用舊模型。
-
+*   **執行狀況：** 無法直接執行，需要手動介入。
+*   **修改地方：**
+    1. 需手動將 `gemini-pro` 改為 `gemini-3.1-flash-lite-preview` 才能正常運作。
+    2. 必須手動在 LINE Console 設定 Webhook URL 並補上 `/callback`。
+*   **更新 Skill：** 是的，我已將 Gemini 的正確模型名稱寫入 Skill 限制中，避免 AI 下次再調用舊模型。
 ---
 
 **Q3. 你遇到什麼問題是 AI 沒辦法自己解決、需要你介入處理的？**
 
-> 在 Mac 上安裝 ngrok 時遇到 bad CPU type 的架構不相容問題，這需要我手動移除檔案並透過 Homebrew 重新安裝。
-> LINE Developers Console 的 Use webhook 開關必須手動開啟，AI 無法進入網頁介面幫我操作。
+1.  **環境架構衝突：** 在 Mac 上安裝 ngrok 時遇到 bad CPU type 的架構不相容問題，需要我手動移除檔案並透過 Homebrew 重新安裝。
+2.  **控制台手動設定：** LINE Developers Console 的 Use webhook 開關必須手動開啟，AI 無法進入網頁幫我操作。
 
 ---
 
 **Q4. 如果你要把這個 LINE Bot 讓朋友使用，你還需要做什麼？**
 
-> 目前機器人跑在我的筆電，關機後就無法運作。未來需部署到 Render 或 Railway 等雲端平台。
-> 目前使用 ngrok 每次重啟網址都會變動，朋友無法一直加新網址，需要一個固定的域名。
-> 避免 Gemini API 被朋友濫用導致額度超限，需要加入頻率限制或對話管理功能。
+*   **雲端部署：** 目前跑在本地電腦，若要讓朋友隨時使用，需要部署到 Render 或 Railway 等雲端平台。
+*   **固定網址：** 目前使用 ngrok 每次開啟網址都會變動，需要申請一個固定的域名 (Domain)。
+*   **流量控管：** 避免 Gemini API 被濫用，需要加入頻率限制或對話管理功能。
