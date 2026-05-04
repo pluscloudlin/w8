@@ -1,4 +1,5 @@
 fastapi
 uvicorn[standard]
 line-bot-sdk
+google-genai
 python-dotenv

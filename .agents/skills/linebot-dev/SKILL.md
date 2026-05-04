@@ -4,6 +4,8 @@
 
 當使用者要求開發 LINE Bot 時，依照本指南使用 `line-bot-sdk-python` **v3** 版本撰寫程式碼。
 
+> **⚠️ Gemini 模型選用規則：** 所有使用 Gemini API 的場景，預設優先使用 `gemini-3.1-flash-lite-preview` 模型，除非使用者明確指定其他模型。
+
 ---
 
 ## 1. 開發前 Checklist
